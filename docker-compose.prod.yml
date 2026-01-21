@@ -1,0 +1,31 @@
+name: unihub-club-service-prod
+
+services:
+  club-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: unihub-club-service-prod
+    ports:
+      - "8002:8002"
+    environment:
+      PORT: 8002
+      MONGO_URI: ${MONGO_URI}
+      JWT_SECRET: ${JWT_SECRET}
+      KAFKA_BROKERS: ${KAFKA_BROKERS}
+      KAFKA_CLIENT_ID: club-service
+    depends_on:
+      - mongo
+    restart: always
+
+  mongo:
+    image: mongo:6
+    container_name: unihub-club-mongo-prod
+    ports:
+      - "27021:27017"
+    volumes:
+      - club_mongo_data_prod:/data/db
+    restart: always
+
+volumes:
+  club_mongo_data_prod:
